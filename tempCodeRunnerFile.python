@@ -1,6 +1,0 @@
-mystring = "foo"
-mylist = []
-
-[s + mystring for s in mylist]
-
-print(s)

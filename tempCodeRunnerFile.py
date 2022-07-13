@@ -1,1 +1,0 @@
-title = title.text.translate(str.maketrans(to_replace))
