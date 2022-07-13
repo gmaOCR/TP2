@@ -1,7 +1,6 @@
 import re
 from urllib.request import ProxyDigestAuthHandler
 import requests
-import csv
 from bs4 import BeautifulSoup
 
 #DECLARATION DES VARIABLES
@@ -37,7 +36,6 @@ a = soup.select('a[href^="catalogue/category/books/"]')
 for href in a:
     link = href['href']
     category_link_list.append(index_url + link)
-# print(category_link_list)
     
 # POUR chaque URL de categorie lire les URL produits
 product_URL_list = []
@@ -45,45 +43,31 @@ for select_URL in category_link_list:
     book_page = requests.get(select_URL)
     if book_page.ok:
         soup_book_page = BeautifulSoup(book_page.text, 'html.parser')
-        # print(soup_book_page)
     pagination = soup_book_page.select_one(".current")
-    # print(pagination)
-    # print("avant if")
-    
+    # CONDITION SI PAGINATION
     if pagination is not None:
-        # print("apres if")
         li_current = soup_book_page.find('li', class_='current')
         max_page = int(re.search("of (.*)", li_current.text).group(1))
-        # TANT QUE pagination lire le lien "Next"
         i = 1
         URL_pagination = []
         while i <= max_page:
             URL_pagination.append(select_URL.replace("index.html","page-" + str(i) + ".html"))
             i = i + 1
-        # print("Valeur URL PAG", URL_pagination)
-        # k = 0
-        # print("Valeur de K avant FOR", k)
         product_URL_list = []
+        #CREER LA LISTE DES URL PRODUITS
         for URL in URL_pagination:
-            # k = k+1
-            # print("Valeur de K dans FOR", k)
-            # print("Valeur de URL", URL)
             book_page = requests.get(URL)
             if book_page.ok:
-            # print(book_page)
                 soup_book_page = BeautifulSoup(book_page.text, 'html.parser')
             div = soup_book_page.findAll('div', class_="image_container")
             for a in div:
                 href = a.select('a[href$="index.html"]')
                 for href_url in href:
                     link = href_url['href'].replace('../../..' , '')
-                    product_URL_list.append(index_url + 'catalogue' + link)
-            # print("Nombre de produit cumulé", len(product_URL_list))
-        # POUR chaque URL produit lire les données du produit                            
+                    product_URL_list.append(index_url + 'catalogue' + link)  
+        # POUR chaque URL produit lire les données du produit
         i = 0
         for product_page_url in product_URL_list:
-            i = i + 1
-            # print( "Product_page_url:    ", str(i),"       ", product_page_url)
             rep2 = requests.get(product_page_url)
             if rep2.ok:
                 soup = BeautifulSoup(rep2.text, 'html.parser')
@@ -102,7 +86,7 @@ for select_URL in category_link_list:
                 category.findNext(text="index.html")
             #Extrais le titre
             title = soup.find('h1')
-                #Extrais le product description
+            #Extrais le product description
             product_description = soup.find( 'p', attrs={'class': None})
             if product_description is not None:
                 product_description = product_description.text
@@ -128,33 +112,27 @@ for select_URL in category_link_list:
             img = item_active.find('img')
             link_split = img['src'].split('../..')
             image_url ='https://books.toscrape.com' + link_split[1]
-            
             # ECRIRE les variables dans le fichier correspondant a la bonne categorie
-            # print("i avant écriture:    ", i)
             title = title.text.translate(str.maketrans(to_replace))
+            book_num = product_page_url[-14:-11]
             with open('CSV/librairie_' + category.text + '.csv','a', encoding='utf-8') as addfile:
              addfile.write(product_page_url + ' | ' + universal_product_code + ' | ' + title + ' | ' + category.text + ' | ' +  price_excluding_tax + ' | ' + price_including_tax + ' | ' + product_description + ' | ' + number_available +  ' | ' + ratings + ' | ' + image_url + '\n')
             img = requests.get(image_url)
-            with open('IMG/' + (title) + ".jpg",'wb') as f:
-                f.write(img.content)
+            with open('IMG/'+ book_num + "_" + (title) + ".jpg",'wb') as f:
+                f.write(img.content) 
     else: 
-        # j = 0
         product_URL_list = []
         pagination = soup_book_page.select_one(".current")
-        # print("j avant écriture:    ", j)
+        # VERIFICATION ABSENCE PAGINATION
         if pagination is None:
-            # print(pagination)
             div = soup_book_page.findAll('div', class_="image_container")
             for a in div:
                 href = a.select('a[href$="index.html"]')
                 for href_url in href:
                     link = href_url['href'].replace('../../..' , '')
-                    # print(link)
                     product_URL_list.append(index_url + 'catalogue' + link)       
             # POUR chaque URL produit lire les données du produit
             for product_page_url in product_URL_list:
-                # j = j + 1
-                # print( "Product_page_url:    ", str(j),"       ", product_page_url)
                 rep2 = requests.get(product_page_url)
                 if rep2.ok:
                     soup = BeautifulSoup(rep2.text, 'html.parser')
@@ -173,7 +151,7 @@ for select_URL in category_link_list:
                     category.findNext(text="index.html")
                 #Extrais le titre
                 title = soup.find('h1')
-                    #Extrais le product description
+                #Extrais le product description
                 product_description = soup.find( 'p', attrs={'class': None})
                 if product_description is not None:
                     product_description = product_description.text
@@ -201,8 +179,9 @@ for select_URL in category_link_list:
                 image_url ='https://books.toscrape.com' + link_split[1]
             # ECRIRE les variables dans le fichier correspondant a la bonne categorie
                 title = title.text.translate(str.maketrans(to_replace))
+                book_num = product_page_url[-14:-11]
                 with open('CSV/librairie_' + category.text + '.csv','a', encoding='utf-8') as addfile:
                     addfile.write(product_page_url + ' | ' + universal_product_code + ' | ' + title + ' | ' + category.text + ' | ' +  price_excluding_tax + ' | ' + price_including_tax + ' | ' + product_description + ' | ' + number_available +  ' | ' + ratings + ' | ' + image_url + '\n')
                 img = requests.get(image_url)
-                with open('IMG/' + (title)  + ".jpg",'wb') as f:
+                with open('IMG/' + book_num + "_" + (title)  + ".jpg",'wb') as f:
                     f.write(img.content)
