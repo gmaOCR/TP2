@@ -2,6 +2,7 @@ import re
 from urllib.request import ProxyDigestAuthHandler
 import requests
 from bs4 import BeautifulSoup
+import textwrap
 
 #DECLARATION DES VARIABLES
 product_page_url = []
@@ -114,11 +115,13 @@ for select_URL in category_link_list:
             image_url ='https://books.toscrape.com' + link_split[1]
             # ECRIRE les variables dans le fichier correspondant a la bonne categorie
             title = title.text.translate(str.maketrans(to_replace))
+            title = textwrap.shorten(title, width=50)
+            title = re.sub(r"[^a-zA-Z0-9]+", ' ', title)
             book_num = product_page_url[-14:-11]
             with open('CSV/librairie_' + category.text + '.csv','a', encoding='utf-8') as addfile:
              addfile.write(product_page_url + ' | ' + universal_product_code + ' | ' + title + ' | ' + category.text + ' | ' +  price_excluding_tax + ' | ' + price_including_tax + ' | ' + product_description + ' | ' + number_available +  ' | ' + ratings + ' | ' + image_url + '\n')
             img = requests.get(image_url)
-            with open('IMG/'+ book_num + "_" + (title) + ".jpg",'wb') as f:
+            with open('IMG/'+ book_num + "_" + title + ".jpg",'wb') as f:
                 f.write(img.content) 
     else: 
         product_URL_list = []
@@ -179,9 +182,12 @@ for select_URL in category_link_list:
                 image_url ='https://books.toscrape.com' + link_split[1]
             # ECRIRE les variables dans le fichier correspondant a la bonne categorie
                 title = title.text.translate(str.maketrans(to_replace))
+                title = textwrap.shorten(title, width=50)
+                title = re.sub(r"[^a-zA-Z0-9]+", ' ', title)
                 book_num = product_page_url[-14:-11]
                 with open('CSV/librairie_' + category.text + '.csv','a', encoding='utf-8') as addfile:
                     addfile.write(product_page_url + ' | ' + universal_product_code + ' | ' + title + ' | ' + category.text + ' | ' +  price_excluding_tax + ' | ' + price_including_tax + ' | ' + product_description + ' | ' + number_available +  ' | ' + ratings + ' | ' + image_url + '\n')
                 img = requests.get(image_url)
-                with open('IMG/' + book_num + "_" + (title)  + ".jpg",'wb') as f:
+                # with open('IMG/' + book_num + "_" + textwrap.shorten(title, width=50)  + ".jpg",'wb') as f:
+                with open('IMG/' + book_num + "_" + title + ".jpg",'wb') as f:
                     f.write(img.content)
