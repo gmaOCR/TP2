@@ -19,6 +19,9 @@ image_url = []
 # CARACTERES INTERDITS SUR NOMMAGE DES FICHIERS
 to_replace = {'/' : ' ', '\\' : ' ', ',': ' ', '#': ' ', ':': ' ', "\"": "'", "*": "_", "?": " "}
 
+# COMPTEUR
+c = []
+
 #SOUP INDEX.HTML
 index_url = "https://books.toscrape.com/"
 category_link_list = []
@@ -69,6 +72,10 @@ for select_URL in category_link_list:
         # POUR chaque URL produit lire les données du produit
         i = 0
         for product_page_url in product_URL_list:
+            #Compteur
+            c = c + 1
+            print(c)
+            #
             rep2 = requests.get(product_page_url)
             if rep2.ok:
                 soup = BeautifulSoup(rep2.text, 'html.parser')
@@ -136,6 +143,10 @@ for select_URL in category_link_list:
                     product_URL_list.append(index_url + 'catalogue' + link)       
             # POUR chaque URL produit lire les données du produit
             for product_page_url in product_URL_list:
+                #Compteur
+                c = c + 1
+                print(c)
+                #
                 rep2 = requests.get(product_page_url)
                 if rep2.ok:
                     soup = BeautifulSoup(rep2.text, 'html.parser')
