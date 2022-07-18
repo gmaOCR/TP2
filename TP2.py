@@ -19,7 +19,7 @@ image_url = []
 # CARACTERES INTERDITS SUR NOMMAGE DES FICHIERS
 to_replace = {'/' : ' ', '\\' : ' ', ',': ' ', '#': ' ', ':': ' ', "\"": "'", "*": "_", "?": " "}
 
-# CoOMP!tEUR DE SORTIE
+# COMPTEUR DE SORTIE
 j = 0
 
 #SOUP INDEX.HTML
