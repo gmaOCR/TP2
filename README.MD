@@ -7,8 +7,10 @@ Ce script permet d'extraire les données des livres du site https://books.toscra
 
 ```bash
 $ git clone https://github.com/marianigregory/OpenClass.git
-$ cd TP2V2
-$ python3 -m venv env
+$ cd OpenClass
+$ mkdir IMG
+$ mkdir CSV
+$ python -m venv env
 $ pip install -r requirements.txt
 $ python TP2.py
 

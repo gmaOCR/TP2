@@ -1,5 +1,3 @@
-import re
-from urllib.request import ProxyDigestAuthHandler
-import requests
-from bs4 import BeautifulSoup
-import textwrap
+requests
+bs4
+textwrap
