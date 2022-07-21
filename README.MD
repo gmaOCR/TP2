@@ -11,7 +11,7 @@ $ cd OpenClass
 $ mkdir IMG
 $ mkdir CSV
 $ python -m venv env
-$ pip install -r requirements.txt
+$ .env/Scripts/pip install -r requirements.txt
 $ python TP2.py
 
 Les résultats données sont classés par catégorie de livre dans le répertoire CSV: un fichier par catégorie.
