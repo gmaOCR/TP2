@@ -25,7 +25,7 @@ class CreateCSV(WebScrapping):
         s = self.scrapper()
         categorie = s.select('a[href^="catalogue/category/books/"]')
         for name in categorie:
-            with open('CSV/librairie_' + name.text.strip() + '.csv' , 'w', encoding='UTF-8') as outfile:
+            with open('CSV2/librairie_' + name.text.strip() + '.csv' , 'w', encoding='UTF-8') as outfile:
                 outfile.write('URL|UPC|Titre|Catégorie|Prix H.T.|Prix T.T.C|Description du produit|Stock|Note|URL de la couverture'+'\n')
 
 class CategoryLink(WebScrapping):
@@ -55,7 +55,7 @@ class ProductLink(CategoryLink):
             if book_page.ok:
                 soup_book_page = BeautifulSoup(book_page.text, 'html.parser')
             pagination = soup_book_page.select_one(".current")
- # CONDITION SI PAGINATION
+            # CONDITION SI PAGINATION
             if pagination is not None:
                 li_current = soup_book_page.find('li', class_='current')
                 max_page = int(re.search("of (.*)", li_current.text).group(1))
@@ -89,7 +89,7 @@ class ProductLink(CategoryLink):
                             product_URL_list.append(index_url + 'catalogue' + link)
                    # print("else " + str(len(product_URL_list)))
         #print("FINAL " + str(len(product_URL_list)))
-    #return product_URL_list
+        return product_URL_list
 
 class Books(ProductLink):
     def __init__(self):
@@ -106,8 +106,7 @@ class Books(ProductLink):
         self.review_rating = review_rating
         self.image_url = image_url
         '''
-    def get_data(self, product_page_url, universal_product_code, title, price_including_tax, price_excluding_tax,
-                 number_available, product_description, category, review_rating, image_url):
+    def get_data(self):
         s = self.get_book_link()
         j = 0
         for product_page_url in s:
@@ -197,4 +196,7 @@ print (h.get_data())
 
 print(p.get_link())
 #print(WebScrapping.scrapper(self=True))
+
+, product_page_url, universal_product_code, title, price_including_tax, price_excluding_tax,
+                 number_available, product_description, category, review_rating, image_url
 '''
